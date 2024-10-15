@@ -1,0 +1,9 @@
+Flask
+Flask-PyMongo
+requests
+pandas
+docx
+bibtexparser
+scholarly
+xml.etree.ElementTree
+xlsxwriter

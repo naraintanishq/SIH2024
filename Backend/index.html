@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publication Search</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        async function fetchPublications() {
+            const query = document.getElementById('query').value;
+            const searchType = document.getElementById('search_type').value;
+            const startYear = document.getElementById('start_year').value;
+            const endYear = document.getElementById('end_year').value;
+
+            const requestBody = {
+                query: query,
+                search_type: searchType,
+                start_year: startYear,
+                end_year: endYear
+            };
+
+            const response = await fetch('http://127.0.0.1:5000/fetch-publications', { 
+                method: 'POST',
+                
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            const result = await response.json();
+            document.getElementById('output').innerHTML = `<p>${result.message} - ${result.count} publications fetched.</p>`;
+        }
+
+        async function getPublications() {
+            const response = await fetch('http://127.0.0.1:5000/get-publications', {
+                method: 'GET'
+            });
+            const publications = await response.json();
+            document.getElementById('output').innerHTML = `<pre>${JSON.stringify(JSON.parse(publications), null, 2)}</pre>`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Publication Search</h1>
+
+    <div>
+        <label for="query">Search Query (Author):</label>
+        <input type="text" id="query" required><br><br>
+
+        <label for="search_type">Search Type:</label>
+        <select id="search_type">
+            <option value="author">Author</option>
+            <option value="title">Title</option>
+            <!-- <option value="institution">institution</option>
+            <option value="DOI">doi</option> -->
+        </select><br><br>
+
+        <label for="start_year">Start Year:</label>
+        <input type="number" id="start_year"><br><br>
+
+        <label for="end_year">End Year:</label>
+        <input type="number" id="end_year"><br><br>
+
+        <button onclick="fetchPublications()">Fetch Publications</button> 
+        <button onclick="getPublications()">Get Stored Publications</button>
+    </div>
+
+    <div id="output"></div>
+</body>
+</html>
